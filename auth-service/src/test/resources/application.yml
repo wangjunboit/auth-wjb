@@ -1,0 +1,30 @@
+server:
+  port: 0
+
+spring:
+  # 测试关闭 Nacos,避免单测强依赖中间件在线
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+        import-check:
+          enabled: false
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth_wjb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: test
+    password: test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+sa-token:
+  token-name: Authorization
+  is-log: false

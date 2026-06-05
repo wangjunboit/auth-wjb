@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: auth-service
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.230:8848
+        username: nacos
+        password: nacos
+      config:
+        server-addr: 192.168.0.230:8848
+        username: nacos
+        password: nacos
+        file-extension: yml
+        # 共享公共配置(Redis、Sa-Token)
+        shared-configs:
+          - data-id: auth-common.yml
+            refresh: true
