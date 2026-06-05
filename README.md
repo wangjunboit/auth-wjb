@@ -23,5 +23,10 @@
          port: 6379
    ```
    `application.yml` 默认 `spring.profiles.active: local`,会自动加载该文件。
-4. `cd backend && mvn spring-boot:run`(若 JAVA_HOME 指向 JDK17+ 才能编译)
+4. 启动(二选一):
+   - 用项目自带包装脚本(推荐,自动用 JDK 21,不改系统环境):
+     `cd backend; .\build.ps1 spring-boot:run`(PowerShell)或 `backend\build.cmd spring-boot:run`(CMD)
+   - 或直接 `cd backend && mvn spring-boot:run`(需自行保证 JAVA_HOME 指向 JDK 17+)
 5. 文档:http://localhost:8080/doc.html
+
+> 说明:本机系统 `JAVA_HOME` 指向旧 JRE,故提供 `backend/build.ps1` / `backend/build.cmd`,仅在本项目命令内临时把 `JAVA_HOME` 指向 JDK 21,不污染全局。所有 `mvn` 操作建议走该脚本。
