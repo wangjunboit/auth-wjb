@@ -2,8 +2,12 @@ server:
   port: 8080
 
 spring:
+  # 默认激活 local profile;真实连接信息放 application-local.yml(已被 .gitignore 排除,不入库)
+  profiles:
+    active: local
   datasource:
-    url: jdbc:mysql://localhost:3309/auth_wjb?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    # 占位默认值,真实地址/账号/密码请在 application-local.yml 覆盖
+    url: jdbc:mysql://localhost:3306/auth_wjb?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
     username: your_db_user
     password: your_db_password
     driver-class-name: com.mysql.cj.jdbc.Driver
