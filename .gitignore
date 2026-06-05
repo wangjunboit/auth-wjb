@@ -11,3 +11,5 @@ dist/
 # Logs / env
 *.log
 application-local.yml
+# Nacos 配置存档(含真实连接,不入库)
+docs/nacos/
