@@ -1,0 +1,13 @@
+# Java
+target/
+*.class
+# IDE
+.idea/
+*.iml
+.vscode/
+# Frontend
+node_modules/
+dist/
+# Logs / env
+*.log
+application-local.yml
