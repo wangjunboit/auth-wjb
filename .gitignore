@@ -13,3 +13,5 @@ dist/
 application-local.yml
 # Nacos 配置存档(含真实连接,不入库)
 docs/nacos/
+# 连真实库的测试 profile(含真实连接)
+application-seed.yml
