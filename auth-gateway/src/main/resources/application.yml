@@ -1,0 +1,4 @@
+server:
+  port: 8080
+
+# 路由规则来自 Nacos 的 auth-gateway-dev.yml;此处仅兜底端口配置
