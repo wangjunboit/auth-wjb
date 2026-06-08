@@ -51,6 +51,40 @@ public class SaTokenGatewayConfig {
                     // 详情 GET /system/user/{id}(排除 /list)
                     SaRouter.match("/system/user/*").notMatch("/system/user/list").match(SaHttpMethod.GET)
                             .check(r -> StpUtil.checkPermission("system:user:query"));
+
+                    // 用户分配角色
+                    SaRouter.match("/system/user/assign-roles").match(SaHttpMethod.POST)
+                            .check(r -> StpUtil.checkPermission("system:user:edit"));
+                    SaRouter.match("/system/user/*/roles").match(SaHttpMethod.GET)
+                            .check(r -> StpUtil.checkPermission("system:user:query"));
+
+                    // 角色管理
+                    SaRouter.match("/system/role/list").match(SaHttpMethod.GET)
+                            .check(r -> StpUtil.checkPermission("system:role:list"));
+                    SaRouter.match("/system/role/assign-menus").match(SaHttpMethod.POST)
+                            .check(r -> StpUtil.checkPermission("system:role:assign"));
+                    SaRouter.match("/system/role").match(SaHttpMethod.POST)
+                            .check(r -> StpUtil.checkPermission("system:role:add"));
+                    SaRouter.match("/system/role").match(SaHttpMethod.PUT)
+                            .check(r -> StpUtil.checkPermission("system:role:edit"));
+                    SaRouter.match("/system/role/**").match(SaHttpMethod.DELETE)
+                            .check(r -> StpUtil.checkPermission("system:role:remove"));
+                    SaRouter.match("/system/role/*").notMatch("/system/role/list").match(SaHttpMethod.GET)
+                            .check(r -> StpUtil.checkPermission("system:role:query"));
+                    SaRouter.match("/system/role/*/menus").match(SaHttpMethod.GET)
+                            .check(r -> StpUtil.checkPermission("system:role:query"));
+
+                    // 菜单管理
+                    SaRouter.match("/system/menu/list").match(SaHttpMethod.GET)
+                            .check(r -> StpUtil.checkPermission("system:menu:list"));
+                    SaRouter.match("/system/menu").match(SaHttpMethod.POST)
+                            .check(r -> StpUtil.checkPermission("system:menu:add"));
+                    SaRouter.match("/system/menu").match(SaHttpMethod.PUT)
+                            .check(r -> StpUtil.checkPermission("system:menu:edit"));
+                    SaRouter.match("/system/menu/**").match(SaHttpMethod.DELETE)
+                            .check(r -> StpUtil.checkPermission("system:menu:remove"));
+                    SaRouter.match("/system/menu/*").notMatch("/system/menu/list").match(SaHttpMethod.GET)
+                            .check(r -> StpUtil.checkPermission("system:menu:query"));
                 })
                 .setError(e -> {
                     SaHolder.getResponse().setHeader("Content-Type", "application/json; charset=utf-8");
