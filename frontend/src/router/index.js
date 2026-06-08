@@ -9,8 +9,8 @@ const routes = [
     children: [
       { path: 'dashboard', component: () => import('../views/Dashboard.vue'), meta: { title: '首页' } },
       { path: 'system/user', component: () => import('../views/system/UserManage.vue'), meta: { title: '用户管理' } },
-      { path: 'system/role', component: () => import('../views/Placeholder.vue'), meta: { title: '角色管理' } },
-      { path: 'system/menu', component: () => import('../views/Placeholder.vue'), meta: { title: '菜单管理' } }
+      { path: 'system/role', component: () => import('../views/system/RoleManage.vue'), meta: { title: '角色管理' } },
+      { path: 'system/menu', component: () => import('../views/system/MenuManage.vue'), meta: { title: '菜单管理' } }
     ]
   }
 ]

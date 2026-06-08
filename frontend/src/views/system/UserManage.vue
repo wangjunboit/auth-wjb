@@ -16,9 +16,10 @@
           <el-tag :type="row.status === 1 ? 'success' : 'info'">{{ row.status === 1 ? '正常' : '禁用' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="280">
         <template #default="{ row }">
           <el-button size="small" v-permission="'system:user:edit'" @click="openEdit(row)">编辑</el-button>
+          <el-button size="small" type="warning" v-permission="'system:user:edit'" @click="openRoles(row)">分配角色</el-button>
           <el-button size="small" type="danger" v-permission="'system:user:remove'" @click="onRemove(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -45,13 +46,26 @@
         <el-button type="primary" :loading="saving" @click="onSave">保存</el-button>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="roleDlg.visible" title="分配角色" width="420px">
+      <el-checkbox-group v-model="roleDlg.checked">
+        <el-checkbox v-for="r in roleDlg.options" :key="r.id" :value="r.id" style="display:block">
+          {{ r.roleName }}（{{ r.roleKey }}）
+        </el-checkbox>
+      </el-checkbox-group>
+      <template #footer>
+        <el-button @click="roleDlg.visible = false">取消</el-button>
+        <el-button type="primary" :loading="roleDlg.saving" @click="onRolesSave">保存</el-button>
+      </template>
+    </el-dialog>
   </el-card>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { userPageApi, userAddApi, userUpdateApi, userRemoveApi } from '../../api/user'
+import { userPageApi, userAddApi, userUpdateApi, userRemoveApi, userRoleIdsApi, userAssignRolesApi } from '../../api/user'
+import { rolePageApi } from '../../api/role'
 
 const loading = ref(false)
 const saving = ref(false)
@@ -64,6 +78,27 @@ const form = reactive({ id: null, username: '', password: '', nickname: '', phon
 const rules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+}
+
+const roleDlg = reactive({ visible: false, saving: false, userId: null, options: [], checked: [] })
+
+const openRoles = async (row) => {
+  roleDlg.userId = row.id
+  if (!roleDlg.options.length) {
+    roleDlg.options = (await rolePageApi({ pageNo: 1, pageSize: 100 })).data.records
+  }
+  roleDlg.checked = (await userRoleIdsApi(row.id)).data || []
+  roleDlg.visible = true
+}
+const onRolesSave = async () => {
+  roleDlg.saving = true
+  try {
+    await userAssignRolesApi({ userId: roleDlg.userId, roleIds: roleDlg.checked })
+    ElMessage.success('分配成功(对方重新登录后生效)')
+    roleDlg.visible = false
+  } finally {
+    roleDlg.saving = false
+  }
 }
 
 const load = async () => {
