@@ -22,10 +22,13 @@ public class AuthService {
 
     private final SysUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final com.wjb.auth.mapper.SysMenuMapper menuMapper;
 
-    public AuthService(SysUserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public AuthService(SysUserMapper userMapper, PasswordEncoder passwordEncoder,
+                       com.wjb.auth.mapper.SysMenuMapper menuMapper) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.menuMapper = menuMapper;
     }
 
     /** 账号密码登录:校验通过后登录 + 把权限码快照写入共享会话(供网关读取) */
@@ -64,5 +67,33 @@ public class AuthService {
         resp.setRoles(userMapper.selectRoleKeysByUserId(userId));
         resp.setPerms(userMapper.selectPermsByUserId(userId));
         return resp;
+    }
+
+    /** 当前用户可见菜单树(M/C 类型,按 parent_id 组装) */
+    public java.util.List<com.wjb.auth.dto.MenuTreeNode> currentUserMenus() {
+        Long userId = UserContext.getUserId();
+        java.util.List<com.wjb.auth.entity.SysMenu> menus = menuMapper.selectVisibleMenusByUserId(userId);
+        java.util.List<com.wjb.auth.dto.MenuTreeNode> nodes = new java.util.ArrayList<>();
+        for (com.wjb.auth.entity.SysMenu m : menus) {
+            nodes.add(com.wjb.auth.dto.MenuTreeNode.from(m));
+        }
+        java.util.Map<Long, com.wjb.auth.dto.MenuTreeNode> byId = new java.util.HashMap<>();
+        for (com.wjb.auth.dto.MenuTreeNode n : nodes) {
+            byId.put(n.getId(), n);
+        }
+        java.util.List<com.wjb.auth.dto.MenuTreeNode> roots = new java.util.ArrayList<>();
+        for (com.wjb.auth.dto.MenuTreeNode n : nodes) {
+            if (n.getParentId() == null || n.getParentId() == 0L) {
+                roots.add(n);
+            } else {
+                com.wjb.auth.dto.MenuTreeNode parent = byId.get(n.getParentId());
+                if (parent != null) {
+                    parent.getChildren().add(n);
+                } else {
+                    roots.add(n);
+                }
+            }
+        }
+        return roots;
     }
 }

@@ -39,4 +39,10 @@ public class AuthController {
     public Result<UserInfoResponse> userinfo() {
         return Result.success(authService.currentUserInfo());
     }
+
+    @Operation(summary = "当前用户可见菜单树")
+    @GetMapping("/menus")
+    public Result<java.util.List<com.wjb.auth.dto.MenuTreeNode>> menus() {
+        return Result.success(authService.currentUserMenus());
+    }
 }
