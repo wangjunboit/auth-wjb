@@ -56,4 +56,17 @@ public class SysUserController {
         userService.remove(id);
         return Result.success();
     }
+
+    @Operation(summary = "查用户已分配角色id")
+    @GetMapping("/{id}/roles")
+    public Result<java.util.List<Long>> roleIds(@PathVariable Long id) {
+        return Result.success(userService.getRoleIds(id));
+    }
+
+    @Operation(summary = "给用户分配角色")
+    @PostMapping("/assign-roles")
+    public Result<Void> assignRoles(@jakarta.validation.Valid @RequestBody com.wjb.auth.dto.AssignRolesRequest req) {
+        userService.assignRoles(req.getUserId(), req.getRoleIds());
+        return Result.success();
+    }
 }

@@ -16,10 +16,13 @@ public class SysUserService {
 
     private final SysUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final com.wjb.auth.mapper.SysUserRoleMapper userRoleMapper;
 
-    public SysUserService(SysUserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public SysUserService(SysUserMapper userMapper, PasswordEncoder passwordEncoder,
+                          com.wjb.auth.mapper.SysUserRoleMapper userRoleMapper) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.userRoleMapper = userRoleMapper;
     }
 
     /** 分页查询(可按用户名模糊) */
@@ -87,5 +90,25 @@ public class SysUserService {
             throw new ServiceException("超级管理员不可删除");
         }
         userMapper.deleteById(id);
+    }
+
+    /** 查用户已分配的角色 id */
+    public java.util.List<Long> getRoleIds(Long userId) {
+        return userRoleMapper.selectRoleIdsByUserId(userId);
+    }
+
+    /** 给用户分配角色:删旧 + 插新 */
+    @org.springframework.transaction.annotation.Transactional
+    public void assignRoles(Long userId, java.util.List<Long> roleIds) {
+        if (userMapper.selectById(userId) == null) {
+            throw new ServiceException("用户不存在");
+        }
+        userRoleMapper.delete(new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<com.wjb.auth.entity.SysUserRole>()
+                .eq(com.wjb.auth.entity.SysUserRole::getUserId, userId));
+        if (roleIds != null) {
+            for (Long roleId : roleIds) {
+                userRoleMapper.insert(new com.wjb.auth.entity.SysUserRole(userId, roleId));
+            }
+        }
     }
 }

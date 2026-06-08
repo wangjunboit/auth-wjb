@@ -18,7 +18,9 @@ class SysUserServiceTest {
 
     private final SysUserMapper userMapper = Mockito.mock(SysUserMapper.class);
     private final PasswordEncoder encoder = Mockito.mock(PasswordEncoder.class);
-    private final SysUserService service = new SysUserService(userMapper, encoder);
+    private final com.wjb.auth.mapper.SysUserRoleMapper userRoleMapper =
+            Mockito.mock(com.wjb.auth.mapper.SysUserRoleMapper.class);
+    private final SysUserService service = new SysUserService(userMapper, encoder, userRoleMapper);
 
     @Test
     void add_duplicateUsername_shouldFail() {
