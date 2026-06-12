@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
   { path: '/login', component: () => import('../views/Login.vue') },
+  { path: '/oauth/callback', component: () => import('../views/OAuthCallback.vue') },
   {
     path: '/',
     component: () => import('../layout/MainLayout.vue'),
@@ -10,7 +11,8 @@ const routes = [
       { path: 'dashboard', component: () => import('../views/Dashboard.vue'), meta: { title: '首页' } },
       { path: 'system/user', component: () => import('../views/system/UserManage.vue'), meta: { title: '用户管理' } },
       { path: 'system/role', component: () => import('../views/system/RoleManage.vue'), meta: { title: '角色管理' } },
-      { path: 'system/menu', component: () => import('../views/system/MenuManage.vue'), meta: { title: '菜单管理' } }
+      { path: 'system/menu', component: () => import('../views/system/MenuManage.vue'), meta: { title: '菜单管理' } },
+      { path: 'system/binding', component: () => import('../views/system/Binding.vue'), meta: { title: '账号绑定' } }
     ]
   }
 ]
@@ -20,8 +22,11 @@ const router = createRouter({
   routes
 })
 
-// 守卫:无 token 跳登录;有 token 但未加载用户数据则先加载
+// 守卫:无 token 跳登录;/oauth/callback 放行(回调流程内部处理)
 router.beforeEach(async (to) => {
+  if (to.path === '/oauth/callback') {
+    return true
+  }
   const token = localStorage.getItem('token')
   if (to.path === '/login') {
     return token ? '/' : true

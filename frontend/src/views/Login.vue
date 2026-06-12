@@ -70,6 +70,17 @@
           </el-form>
         </el-tab-pane>
       </el-tabs>
+      <div class="oauth-row">
+        <span class="oauth-label">第三方登录</span>
+        <div class="oauth-btns">
+          <el-button circle @click="oauthLogin('github')" title="GitHub 登录">
+            <el-icon><Platform /></el-icon>
+          </el-button>
+          <el-button circle type="success" @click="oauthLogin('wechat')" title="微信登录(mock)">
+            <el-icon><ChatDotRound /></el-icon>
+          </el-button>
+        </div>
+      </div>
     </el-card>
   </div>
 </template>
@@ -78,9 +89,10 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { User, Lock, Iphone, Message } from '@element-plus/icons-vue'
+import { User, Lock, Iphone, Message, Platform, ChatDotRound } from '@element-plus/icons-vue'
 import { useAuthStore } from '../store/auth'
 import { captchaApi, smsCodeApi, emailCodeApi } from '../api/auth'
+import { oauthUrlApi } from '../api/oauth'
 
 const router = useRouter()
 const store = useAuthStore()
@@ -149,6 +161,15 @@ const onEmailLogin = async () => {
     await afterLogin()
   } catch (e) { /* 提示已弹 */ } finally { loading.value = false }
 }
+
+const oauthLogin = async (provider) => {
+  try {
+    const res = await oauthUrlApi(provider)
+    sessionStorage.setItem('oauth_provider', provider)
+    sessionStorage.setItem('oauth_mode', 'login')
+    window.location.href = res.data
+  } catch (e) { /* 提示已弹 */ }
+}
 </script>
 
 <style scoped>
@@ -158,4 +179,7 @@ const onEmailLogin = async () => {
 .btn { width: 100%; }
 .cap-row { display: flex; gap: 8px; width: 100%; align-items: center; }
 .cap-img { height: 40px; cursor: pointer; border: 1px solid #dcdfe6; border-radius: 4px; }
+.oauth-row { margin-top: 8px; text-align: center; }
+.oauth-label { color: #909399; font-size: 12px; display: block; margin-bottom: 6px; }
+.oauth-btns { display: flex; gap: 12px; justify-content: center; }
 </style>
