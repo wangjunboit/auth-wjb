@@ -28,3 +28,13 @@ mybatis-plus:
 sa-token:
   token-name: Authorization
   is-log: false
+
+# 测试用 dummy OAuth 配置(真实值来自 Nacos;测试不真正调用第三方)
+oauth:
+  github:
+    client-id: dummy
+    client-secret: dummy
+    redirect-uri: http://localhost:5173/oauth/callback
+    authorize-url: https://github.com/login/oauth/authorize
+    token-url: https://github.com/login/oauth/access_token
+    user-url: https://api.github.com/user
