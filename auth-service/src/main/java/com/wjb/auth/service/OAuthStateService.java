@@ -1,6 +1,7 @@
 package com.wjb.auth.service;
 
 import com.wjb.auth.common.exception.ServiceException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -9,16 +10,13 @@ import java.util.UUID;
 
 /** OAuth state:防 CSRF + 携带模式;value 形如 "login" 或 "bind:{userId}" */
 @Service
+@RequiredArgsConstructor
 public class OAuthStateService {
 
     private static final String PREFIX = "oauth:state:";
     private static final Duration TTL = Duration.ofMinutes(5);
 
     private final StringRedisTemplate redis;
-
-    public OAuthStateService(StringRedisTemplate redis) {
-        this.redis = redis;
-    }
 
     public String createLogin() {
         String state = UUID.randomUUID().toString().replace("-", "");

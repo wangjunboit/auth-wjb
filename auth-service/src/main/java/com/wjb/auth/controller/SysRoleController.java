@@ -9,6 +9,7 @@ import com.wjb.auth.service.SysRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +17,10 @@ import java.util.List;
 @Tag(name = "角色管理")
 @RestController
 @RequestMapping("/system/role")
+@RequiredArgsConstructor
 public class SysRoleController {
 
     private final SysRoleService roleService;
-
-    public SysRoleController(SysRoleService roleService) {
-        this.roleService = roleService;
-    }
 
     @Operation(summary = "角色分页列表")
     @GetMapping("/list")

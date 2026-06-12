@@ -3,11 +3,13 @@ package com.wjb.auth.common.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /** 公共审计字段基类,所有实体继承 */
+@Data
 public class BaseEntity implements Serializable {
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
@@ -25,15 +27,4 @@ public class BaseEntity implements Serializable {
     @TableLogic
     @TableField("deleted")
     private Integer deleted;
-
-    public LocalDateTime getCreateTime() { return createTime; }
-    public void setCreateTime(LocalDateTime createTime) { this.createTime = createTime; }
-    public LocalDateTime getUpdateTime() { return updateTime; }
-    public void setUpdateTime(LocalDateTime updateTime) { this.updateTime = updateTime; }
-    public Long getCreateBy() { return createBy; }
-    public void setCreateBy(Long createBy) { this.createBy = createBy; }
-    public Long getUpdateBy() { return updateBy; }
-    public void setUpdateBy(Long updateBy) { this.updateBy = updateBy; }
-    public Integer getDeleted() { return deleted; }
-    public void setDeleted(Integer deleted) { this.deleted = deleted; }
 }

@@ -10,6 +10,7 @@ import com.wjb.auth.entity.SysRoleMenu;
 import com.wjb.auth.mapper.SysRoleMapper;
 import com.wjb.auth.mapper.SysRoleMenuMapper;
 import com.wjb.auth.mapper.SysUserRoleMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -17,18 +18,12 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SysRoleService {
 
     private final SysRoleMapper roleMapper;
     private final SysRoleMenuMapper roleMenuMapper;
     private final SysUserRoleMapper userRoleMapper;
-
-    public SysRoleService(SysRoleMapper roleMapper, SysRoleMenuMapper roleMenuMapper,
-                          SysUserRoleMapper userRoleMapper) {
-        this.roleMapper = roleMapper;
-        this.roleMenuMapper = roleMenuMapper;
-        this.userRoleMapper = userRoleMapper;
-    }
 
     public PageResult<SysRole> page(long pageNo, long pageSize, String roleName) {
         Page<SysRole> page = new Page<>(pageNo, pageSize);

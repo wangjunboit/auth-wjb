@@ -12,6 +12,7 @@ import com.wjb.auth.mapper.SysMenuMapper;
 import com.wjb.auth.mapper.SysUserMapper;
 import com.wjb.auth.sender.MailSender;
 import com.wjb.auth.sender.SmsSender;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.time.Duration;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     public static final String SESSION_PERMS = "perms";
@@ -34,19 +36,6 @@ public class AuthService {
     private final VerifyCodeService verifyCodeService;
     private final SmsSender smsSender;
     private final MailSender mailSender;
-
-    public AuthService(SysUserMapper userMapper, PasswordEncoder passwordEncoder, SysMenuMapper menuMapper,
-                       StringRedisTemplate redis, CaptchaService captchaService, VerifyCodeService verifyCodeService,
-                       SmsSender smsSender, MailSender mailSender) {
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.menuMapper = menuMapper;
-        this.redis = redis;
-        this.captchaService = captchaService;
-        this.verifyCodeService = verifyCodeService;
-        this.smsSender = smsSender;
-        this.mailSender = mailSender;
-    }
 
     /** 账号密码登录:图形码 + 防爆破 */
     public LoginResponse login(LoginRequest req) {

@@ -5,6 +5,7 @@ import com.wjb.auth.dto.OAuthCallbackResponse;
 import com.wjb.auth.service.OAuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -12,13 +13,10 @@ import java.util.Map;
 @Tag(name = "第三方登录")
 @RestController
 @RequestMapping("/auth/oauth")
+@RequiredArgsConstructor
 public class OAuthController {
 
     private final OAuthService oauthService;
-
-    public OAuthController(OAuthService oauthService) {
-        this.oauthService = oauthService;
-    }
 
     @Operation(summary = "获取第三方登录授权地址")
     @GetMapping("/{provider}/url")

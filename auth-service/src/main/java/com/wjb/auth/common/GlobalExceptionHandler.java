@@ -1,12 +1,14 @@
 package com.wjb.auth.common;
 
 import com.wjb.auth.common.exception.ServiceException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /** auth-service 全局异常处理(登录态/权限校验已在网关,这里处理业务/参数/兜底) */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -24,7 +26,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception e) {
-        // 实际项目此处应记日志:log.error("系统异常", e);
+        log.error("系统异常", e);
         return Result.fail(ResultCode.ERROR);
     }
 }

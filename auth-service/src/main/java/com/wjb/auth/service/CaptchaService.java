@@ -3,6 +3,7 @@ package com.wjb.auth.service;
 import com.wf.captcha.SpecCaptcha;
 import com.wjb.auth.common.exception.ServiceException;
 import com.wjb.auth.dto.CaptchaResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -12,16 +13,13 @@ import java.util.UUID;
 
 /** 图形验证码:生成(算术)与校验,答案存 Redis 2 分钟 */
 @Service
+@RequiredArgsConstructor
 public class CaptchaService {
 
     private static final String PREFIX = "captcha:";
     private static final Duration TTL = Duration.ofMinutes(2);
 
     private final StringRedisTemplate redis;
-
-    public CaptchaService(StringRedisTemplate redis) {
-        this.redis = redis;
-    }
 
     /** 生成图形验证码,返回 key + base64 图(字符型,4 位;JDK17+ 无 Nashorn,故不用算术型) */
     public CaptchaResponse generate() {

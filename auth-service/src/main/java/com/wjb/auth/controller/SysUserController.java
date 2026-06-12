@@ -8,18 +8,16 @@ import com.wjb.auth.service.SysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "用户管理")
 @RestController
 @RequestMapping("/system/user")
+@RequiredArgsConstructor
 public class SysUserController {
 
     private final SysUserService userService;
-
-    public SysUserController(SysUserService userService) {
-        this.userService = userService;
-    }
 
     @Operation(summary = "用户分页列表")
     @GetMapping("/list")

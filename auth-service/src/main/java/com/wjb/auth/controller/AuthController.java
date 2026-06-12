@@ -14,12 +14,14 @@ import com.wjb.auth.service.CaptchaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "认证")
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
@@ -28,11 +30,6 @@ public class AuthController {
     /** dev 环境回传验证码 code 便于联调;生产置 false */
     @Value("${auth.dev-return-code:false}")
     private boolean devReturnCode;
-
-    public AuthController(AuthService authService, CaptchaService captchaService) {
-        this.authService = authService;
-        this.captchaService = captchaService;
-    }
 
     @Operation(summary = "获取图形验证码")
     @GetMapping("/captcha")

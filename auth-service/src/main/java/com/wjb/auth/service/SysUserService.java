@@ -7,23 +7,18 @@ import com.wjb.auth.dto.PageResult;
 import com.wjb.auth.dto.UserSaveRequest;
 import com.wjb.auth.entity.SysUser;
 import com.wjb.auth.mapper.SysUserMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
+@RequiredArgsConstructor
 public class SysUserService {
 
     private final SysUserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final com.wjb.auth.mapper.SysUserRoleMapper userRoleMapper;
-
-    public SysUserService(SysUserMapper userMapper, PasswordEncoder passwordEncoder,
-                          com.wjb.auth.mapper.SysUserRoleMapper userRoleMapper) {
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.userRoleMapper = userRoleMapper;
-    }
 
     /** 分页查询(可按用户名模糊) */
     public PageResult<SysUser> page(long pageNo, long pageSize, String username) {

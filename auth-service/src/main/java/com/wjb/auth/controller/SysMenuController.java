@@ -8,6 +8,7 @@ import com.wjb.auth.service.SysMenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,13 +16,10 @@ import java.util.List;
 @Tag(name = "菜单管理")
 @RestController
 @RequestMapping("/system/menu")
+@RequiredArgsConstructor
 public class SysMenuController {
 
     private final SysMenuService menuService;
-
-    public SysMenuController(SysMenuService menuService) {
-        this.menuService = menuService;
-    }
 
     @Operation(summary = "菜单树")
     @GetMapping("/list")

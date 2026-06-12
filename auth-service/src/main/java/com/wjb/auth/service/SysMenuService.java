@@ -7,6 +7,7 @@ import com.wjb.auth.dto.MenuTreeNode;
 import com.wjb.auth.entity.SysMenu;
 import com.wjb.auth.mapper.SysMenuMapper;
 import com.wjb.auth.mapper.SysRoleMenuMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,15 +16,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class SysMenuService {
 
     private final SysMenuMapper menuMapper;
     private final SysRoleMenuMapper roleMenuMapper;
-
-    public SysMenuService(SysMenuMapper menuMapper, SysRoleMenuMapper roleMenuMapper) {
-        this.menuMapper = menuMapper;
-        this.roleMenuMapper = roleMenuMapper;
-    }
 
     /** 全部菜单构造成树(按 sort 升序) */
     public List<MenuTreeNode> tree() {

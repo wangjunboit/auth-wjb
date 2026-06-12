@@ -1,6 +1,9 @@
 package com.wjb.auth.common;
 
+import lombok.Getter;
+
 /** 统一返回码 */
+@Getter
 public enum ResultCode {
     SUCCESS(200, "成功"),
     BAD_REQUEST(400, "请求参数错误"),
@@ -15,7 +18,4 @@ public enum ResultCode {
         this.code = code;
         this.msg = msg;
     }
-
-    public int getCode() { return code; }
-    public String getMsg() { return msg; }
 }

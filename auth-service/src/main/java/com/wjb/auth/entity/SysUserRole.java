@@ -4,8 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wjb.auth.common.entity.BaseEntity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /** 用户-角色关联 */
+@Data
+@EqualsAndHashCode(callSuper = true)
 @TableName("sys_user_role")
 public class SysUserRole extends BaseEntity {
 
@@ -20,11 +24,4 @@ public class SysUserRole extends BaseEntity {
         this.userId = userId;
         this.roleId = roleId;
     }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public Long getRoleId() { return roleId; }
-    public void setRoleId(Long roleId) { this.roleId = roleId; }
 }
