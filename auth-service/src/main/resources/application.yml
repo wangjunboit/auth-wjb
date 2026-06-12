@@ -13,3 +13,7 @@ mybatis-plus:
 
 knife4j:
   enable: true
+
+# 开发环境:验证码接口回传 code 便于联调(生产改 false)
+auth:
+  dev-return-code: true
