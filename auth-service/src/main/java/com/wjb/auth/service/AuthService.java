@@ -136,6 +136,18 @@ public class AuthService {
         return new LoginResponse(StpUtil.getTokenValue(), user.getId());
     }
 
+    /** 按用户 id 登录(供 OAuth 等已确认身份的场景收口复用) */
+    public LoginResponse loginByUserId(Long userId) {
+        SysUser user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new ServiceException("用户不存在");
+        }
+        if (user.getStatus() != null && user.getStatus() == 0) {
+            throw new ServiceException("账号已被禁用");
+        }
+        return doLogin(user);
+    }
+
     public void logout() {
         StpUtil.logout(UserContext.getUserId());
     }
