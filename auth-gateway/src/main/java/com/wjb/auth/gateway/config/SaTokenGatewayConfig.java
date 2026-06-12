@@ -30,6 +30,7 @@ public class SaTokenGatewayConfig {
                                     "/auth/sms-code",
                                     "/auth/email-code",
                                     "/auth/oauth/**",
+                                    "/auth/captcha",
                                     "/health",
                                     "/doc.html",
                                     "/webjars/**",
