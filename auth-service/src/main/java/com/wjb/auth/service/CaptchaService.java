@@ -1,6 +1,6 @@
 package com.wjb.auth.service;
 
-import com.wf.captcha.ArithmeticCaptcha;
+import com.wf.captcha.SpecCaptcha;
 import com.wjb.auth.common.exception.ServiceException;
 import com.wjb.auth.dto.CaptchaResponse;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,11 +23,10 @@ public class CaptchaService {
         this.redis = redis;
     }
 
-    /** 生成图形验证码,返回 key + base64 图 */
+    /** 生成图形验证码,返回 key + base64 图(字符型,4 位;JDK17+ 无 Nashorn,故不用算术型) */
     public CaptchaResponse generate() {
-        ArithmeticCaptcha captcha = new ArithmeticCaptcha(130, 48);
-        captcha.setLen(2);
-        String answer = captcha.text(); // 算术结果字符串
+        SpecCaptcha captcha = new SpecCaptcha(130, 48, 4);
+        String answer = captcha.text(); // 4 位字符
         String key = UUID.randomUUID().toString().replace("-", "");
         redis.opsForValue().set(PREFIX + key, answer, TTL);
         return new CaptchaResponse(key, captcha.toBase64());
