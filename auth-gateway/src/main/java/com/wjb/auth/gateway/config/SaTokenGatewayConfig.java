@@ -4,88 +4,45 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.reactor.filter.SaReactorFilter;
-import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
+import com.wjb.auth.gateway.security.ApiPermCache;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/** 网关统一鉴权:登录态 + 按路由/方法校验权限码,失败返回统一 JSON */
+/** 网关统一鉴权:登录态 + 动态 RBAC(查映射决定所需权限码),失败返回统一 JSON */
 @Configuration
 public class SaTokenGatewayConfig {
 
+    /** 鉴权白名单(放行:无需登录) */
+    private static final String[] WHITELIST = {
+            "/auth/login", "/auth/login/**", "/auth/sms-code", "/auth/email-code",
+            "/auth/oauth/**", "/auth/captcha", "/health", "/doc.html",
+            "/webjars/**", "/v3/api-docs/**", "/swagger-ui/**", "/favicon.ico"
+    };
+
     @Bean
-    public SaReactorFilter saReactorFilter() {
+    public SaReactorFilter saReactorFilter(ApiPermCache apiPermCache) {
         return new SaReactorFilter()
                 .addInclude("/**")
                 .setAuth(obj -> {
-                    // 1) 白名单放行
-                    SaRouter.match("/**")
-                            .notMatch(
-                                    "/auth/login",
-                                    "/auth/login/**",
-                                    "/auth/sms-code",
-                                    "/auth/email-code",
-                                    "/auth/oauth/**",
-                                    "/auth/captcha",
-                                    "/health",
-                                    "/doc.html",
-                                    "/webjars/**",
-                                    "/v3/api-docs/**",
-                                    "/swagger-ui/**",
-                                    "/favicon.ico"
-                            )
+                    // 1) 白名单外:必须登录
+                    SaRouter.match("/**").notMatch(WHITELIST)
                             .check(r -> StpUtil.checkLogin());
 
-                    // 2) 用户管理:按路由 + HTTP 方法校验权限码(先匹配路径,再链式匹配方法)
-                    SaRouter.match("/system/user/list").match(SaHttpMethod.GET)
-                            .check(r -> StpUtil.checkPermission("system:user:list"));
-                    SaRouter.match("/system/user").match(SaHttpMethod.POST)
-                            .check(r -> StpUtil.checkPermission("system:user:add"));
-                    SaRouter.match("/system/user").match(SaHttpMethod.PUT)
-                            .check(r -> StpUtil.checkPermission("system:user:edit"));
-                    SaRouter.match("/system/user/**").match(SaHttpMethod.DELETE)
-                            .check(r -> StpUtil.checkPermission("system:user:remove"));
-                    // 详情 GET /system/user/{id}(排除 /list)
-                    SaRouter.match("/system/user/*").notMatch("/system/user/list").match(SaHttpMethod.GET)
-                            .check(r -> StpUtil.checkPermission("system:user:query"));
-
-                    // 用户分配角色
-                    SaRouter.match("/system/user/assign-roles").match(SaHttpMethod.POST)
-                            .check(r -> StpUtil.checkPermission("system:user:edit"));
-                    SaRouter.match("/system/user/*/roles").match(SaHttpMethod.GET)
-                            .check(r -> StpUtil.checkPermission("system:user:query"));
-
-                    // 角色管理
-                    SaRouter.match("/system/role/list").match(SaHttpMethod.GET)
-                            .check(r -> StpUtil.checkPermission("system:role:list"));
-                    SaRouter.match("/system/role/assign-menus").match(SaHttpMethod.POST)
-                            .check(r -> StpUtil.checkPermission("system:role:assign"));
-                    SaRouter.match("/system/role").match(SaHttpMethod.POST)
-                            .check(r -> StpUtil.checkPermission("system:role:add"));
-                    SaRouter.match("/system/role").match(SaHttpMethod.PUT)
-                            .check(r -> StpUtil.checkPermission("system:role:edit"));
-                    SaRouter.match("/system/role/**").match(SaHttpMethod.DELETE)
-                            .check(r -> StpUtil.checkPermission("system:role:remove"));
-                    SaRouter.match("/system/role/*").notMatch("/system/role/list").match(SaHttpMethod.GET)
-                            .check(r -> StpUtil.checkPermission("system:role:query"));
-                    SaRouter.match("/system/role/*/menus").match(SaHttpMethod.GET)
-                            .check(r -> StpUtil.checkPermission("system:role:query"));
-
-                    // 菜单管理
-                    SaRouter.match("/system/menu/list").match(SaHttpMethod.GET)
-                            .check(r -> StpUtil.checkPermission("system:menu:list"));
-                    SaRouter.match("/system/menu").match(SaHttpMethod.POST)
-                            .check(r -> StpUtil.checkPermission("system:menu:add"));
-                    SaRouter.match("/system/menu").match(SaHttpMethod.PUT)
-                            .check(r -> StpUtil.checkPermission("system:menu:edit"));
-                    SaRouter.match("/system/menu/**").match(SaHttpMethod.DELETE)
-                            .check(r -> StpUtil.checkPermission("system:menu:remove"));
-                    SaRouter.match("/system/menu/*").notMatch("/system/menu/list").match(SaHttpMethod.GET)
-                            .check(r -> StpUtil.checkPermission("system:menu:query"));
+                    // 2) 动态权限校验:查映射,命中才校验权限码,未命中=只需登录
+                    SaRouter.match("/**").notMatch(WHITELIST)
+                            .check(r -> {
+                                String method = SaHolder.getRequest().getMethod();
+                                String path = SaHolder.getRequest().getRequestPath();
+                                String perm = apiPermCache.requiredPerm(method, path);
+                                if (perm != null) {
+                                    StpUtil.checkPermission(perm);
+                                }
+                            });
                 })
                 .setError(e -> {
                     SaHolder.getResponse().setHeader("Content-Type", "application/json; charset=utf-8");
