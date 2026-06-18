@@ -17,4 +17,6 @@ public class MenuSaveRequest {
     private String icon;
     private Integer sort;
     private Integer visible;
+    private String apiUrl;
+    private String apiMethod;
 }

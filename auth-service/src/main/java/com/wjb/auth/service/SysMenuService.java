@@ -94,5 +94,7 @@ public class SysMenuService {
         menu.setIcon(req.getIcon());
         menu.setSort(req.getSort() == null ? 0 : req.getSort());
         menu.setVisible(req.getVisible() == null ? 1 : req.getVisible());
+        menu.setApiUrl(req.getApiUrl());
+        menu.setApiMethod(req.getApiMethod());
     }
 }

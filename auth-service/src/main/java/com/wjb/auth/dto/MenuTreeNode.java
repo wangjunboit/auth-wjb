@@ -19,6 +19,8 @@ public class MenuTreeNode {
     private String icon;
     private Integer sort;
     private Integer visible;
+    private String apiUrl;
+    private String apiMethod;
     private List<MenuTreeNode> children = new ArrayList<>();
 
     public static MenuTreeNode from(SysMenu m) {
@@ -33,6 +35,8 @@ public class MenuTreeNode {
         n.icon = m.getIcon();
         n.sort = m.getSort();
         n.visible = m.getVisible();
+        n.apiUrl = m.getApiUrl();
+        n.apiMethod = m.getApiMethod();
         return n;
     }
 }
