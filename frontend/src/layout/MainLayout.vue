@@ -22,6 +22,7 @@
           <span class="user">{{ store.userInfo?.nickname || store.userInfo?.username }}</span>
           <template #dropdown>
             <el-dropdown-menu>
+              <el-dropdown-item command="profile">个人中心</el-dropdown-item>
               <el-dropdown-item command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -54,6 +55,10 @@ const fullPath = (parent, child) => {
 }
 
 const onCommand = async (cmd) => {
+  if (cmd === 'profile') {
+    router.push('/profile')
+    return
+  }
   if (cmd === 'logout') {
     await store.logout()
     ElMessage.success('已退出')

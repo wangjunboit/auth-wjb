@@ -12,7 +12,8 @@ const routes = [
       { path: 'system/user', component: () => import('../views/system/UserManage.vue'), meta: { title: '用户管理' } },
       { path: 'system/role', component: () => import('../views/system/RoleManage.vue'), meta: { title: '角色管理' } },
       { path: 'system/menu', component: () => import('../views/system/MenuManage.vue'), meta: { title: '菜单管理' } },
-      { path: 'system/binding', component: () => import('../views/system/Binding.vue'), meta: { title: '账号绑定' } }
+      { path: 'system/binding', component: () => import('../views/system/Binding.vue'), meta: { title: '账号绑定' } },
+      { path: 'profile', component: () => import('../views/Profile.vue'), meta: { title: '个人中心' } }
     ]
   }
 ]

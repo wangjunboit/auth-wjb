@@ -9,3 +9,7 @@ export const userMenusApi = () => request.get('/auth/menus')
 export const captchaApi = () => request.get('/auth/captcha')
 export const smsCodeApi = (data) => request.post('/auth/sms-code', data)
 export const emailCodeApi = (data) => request.post('/auth/email-code', data)
+
+export const profileApi = () => request.get('/auth/profile')
+export const updateProfileApi = (data) => request.put('/auth/profile', data)
+export const changePasswordApi = (data) => request.put('/auth/password', data)

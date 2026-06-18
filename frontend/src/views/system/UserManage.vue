@@ -16,10 +16,11 @@
           <el-tag :type="row.status === 1 ? 'success' : 'info'">{{ row.status === 1 ? '正常' : '禁用' }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="280">
+      <el-table-column label="操作" width="360">
         <template #default="{ row }">
           <el-button size="small" v-permission="'system:user:edit'" @click="openEdit(row)">编辑</el-button>
           <el-button size="small" type="warning" v-permission="'system:user:edit'" @click="openRoles(row)">分配角色</el-button>
+          <el-button size="small" type="warning" v-permission="'system:user:edit'" @click="onReset(row)">重置密码</el-button>
           <el-button size="small" type="danger" v-permission="'system:user:remove'" @click="onRemove(row)">删除</el-button>
         </template>
       </el-table-column>
@@ -64,7 +65,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { userPageApi, userAddApi, userUpdateApi, userRemoveApi, userRoleIdsApi, userAssignRolesApi } from '../../api/user'
+import { userPageApi, userAddApi, userUpdateApi, userRemoveApi, userRoleIdsApi, userAssignRolesApi, resetPasswordApi } from '../../api/user'
 import { rolePageApi } from '../../api/role'
 
 const loading = ref(false)
@@ -155,6 +156,12 @@ const onRemove = async (row) => {
   await userRemoveApi(row.id)
   ElMessage.success('删除成功')
   load()
+}
+
+const onReset = async (row) => {
+  await ElMessageBox.confirm(`确认将「${row.username}」的密码重置为 123456?`, '提示', { type: 'warning' })
+  await resetPasswordApi(row.id)
+  ElMessage.success('已重置为 123456')
 }
 
 load()
