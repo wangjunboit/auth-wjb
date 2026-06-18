@@ -17,3 +17,7 @@ docs/nacos/
 application-seed.yml
 # Claude 本地配置
 .claude/
+
+# 网关托管的前端构建产物(由 build-all.ps1 生成,不入库;保留 .gitkeep)
+auth-gateway/src/main/resources/static/*
+!auth-gateway/src/main/resources/static/.gitkeep

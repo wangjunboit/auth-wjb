@@ -2,19 +2,19 @@ spring:
   application:
     name: auth-service
   profiles:
-    active: dev
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   cloud:
     nacos:
       discovery:
         server-addr: 192.168.0.230:8848
         username: nacos
         password: nacos
-        namespace: test
+        namespace: ${NACOS_NAMESPACE:test}
       config:
         server-addr: 192.168.0.230:8848
         username: nacos
         password: nacos
-        namespace: test
+        namespace: ${NACOS_NAMESPACE:test}
         file-extension: yml
         # 共享公共配置(Redis、Sa-Token)
         shared-configs:
