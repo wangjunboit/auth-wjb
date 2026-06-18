@@ -2,7 +2,10 @@ package com.wjb.auth.controller;
 
 import com.wjb.auth.common.Result;
 import com.wjb.auth.dto.CaptchaResponse;
+import com.wjb.auth.dto.ChangePasswordRequest;
 import com.wjb.auth.dto.EmailLoginRequest;
+import com.wjb.auth.dto.ProfileUpdateRequest;
+import com.wjb.auth.dto.ProfileVO;
 import com.wjb.auth.dto.LoginRequest;
 import com.wjb.auth.dto.LoginResponse;
 import com.wjb.auth.dto.SendEmailCodeRequest;
@@ -86,5 +89,25 @@ public class AuthController {
     @GetMapping("/menus")
     public Result<java.util.List<com.wjb.auth.dto.MenuTreeNode>> menus() {
         return Result.success(authService.currentUserMenus());
+    }
+
+    @Operation(summary = "获取当前用户资料")
+    @GetMapping("/profile")
+    public Result<ProfileVO> profile() {
+        return Result.success(authService.getProfile());
+    }
+
+    @Operation(summary = "修改当前用户资料")
+    @PutMapping("/profile")
+    public Result<Void> updateProfile(@RequestBody ProfileUpdateRequest req) {
+        authService.updateProfile(req);
+        return Result.success();
+    }
+
+    @Operation(summary = "修改当前用户密码")
+    @PutMapping("/password")
+    public Result<Void> changePassword(@Valid @RequestBody ChangePasswordRequest req) {
+        authService.changePassword(req);
+        return Result.success();
     }
 }

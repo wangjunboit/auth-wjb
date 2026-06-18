@@ -4,8 +4,11 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wjb.auth.common.UserContext;
 import com.wjb.auth.common.exception.ServiceException;
+import com.wjb.auth.dto.ChangePasswordRequest;
 import com.wjb.auth.dto.LoginRequest;
 import com.wjb.auth.dto.LoginResponse;
+import com.wjb.auth.dto.ProfileUpdateRequest;
+import com.wjb.auth.dto.ProfileVO;
 import com.wjb.auth.dto.UserInfoResponse;
 import com.wjb.auth.entity.SysUser;
 import com.wjb.auth.mapper.SysMenuMapper;
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.util.List;
@@ -181,5 +185,65 @@ public class AuthService {
             }
         }
         return roots;
+    }
+
+    /** 当前用户资料 */
+    public ProfileVO getProfile() {
+        SysUser user = userMapper.selectById(UserContext.getUserId());
+        if (user == null) {
+            throw new ServiceException("用户不存在");
+        }
+        ProfileVO vo = new ProfileVO();
+        vo.setUsername(user.getUsername());
+        vo.setNickname(user.getNickname());
+        vo.setPhone(user.getPhone());
+        vo.setEmail(user.getEmail());
+        vo.setAvatar(user.getAvatar());
+        return vo;
+    }
+
+    /** 改自己资料(昵称/手机/邮箱/头像);手机、邮箱查重(排除自己) */
+    public void updateProfile(ProfileUpdateRequest req) {
+        Long userId = UserContext.getUserId();
+        SysUser user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new ServiceException("用户不存在");
+        }
+        if (StringUtils.hasText(req.getPhone())) {
+            Long c = userMapper.selectCount(new LambdaQueryWrapper<SysUser>()
+                    .eq(SysUser::getPhone, req.getPhone())
+                    .ne(SysUser::getId, userId));
+            if (c != null && c > 0) {
+                throw new ServiceException("手机号已被占用");
+            }
+        }
+        if (StringUtils.hasText(req.getEmail())) {
+            Long c = userMapper.selectCount(new LambdaQueryWrapper<SysUser>()
+                    .eq(SysUser::getEmail, req.getEmail())
+                    .ne(SysUser::getId, userId));
+            if (c != null && c > 0) {
+                throw new ServiceException("邮箱已被占用");
+            }
+        }
+        user.setNickname(req.getNickname());
+        user.setPhone(req.getPhone());
+        user.setEmail(req.getEmail());
+        user.setAvatar(req.getAvatar());
+        userMapper.updateById(user);
+    }
+
+    /** 改自己密码:校验旧密码 → 存新 → 踢当前会话强制重登 */
+    public void changePassword(ChangePasswordRequest req) {
+        Long userId = UserContext.getUserId();
+        SysUser user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new ServiceException("用户不存在");
+        }
+        if (user.getPassword() == null || !passwordEncoder.matches(req.getOldPassword(), user.getPassword())) {
+            throw new ServiceException("原密码错误");
+        }
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        userMapper.updateById(user);
+        StpUtil.logout(userId);
     }
 }

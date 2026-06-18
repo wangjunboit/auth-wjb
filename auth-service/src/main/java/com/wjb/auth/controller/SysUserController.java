@@ -67,4 +67,11 @@ public class SysUserController {
         userService.assignRoles(req.getUserId(), req.getRoleIds());
         return Result.success();
     }
+
+    @Operation(summary = "管理员重置用户密码")
+    @PutMapping("/{id}/reset-password")
+    public Result<Void> resetPassword(@PathVariable Long id) {
+        userService.resetPassword(id);
+        return Result.success();
+    }
 }

@@ -1,5 +1,6 @@
 package com.wjb.auth.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wjb.auth.common.exception.ServiceException;
@@ -85,6 +86,17 @@ public class SysUserService {
             throw new ServiceException("超级管理员不可删除");
         }
         userMapper.deleteById(id);
+    }
+
+    /** 管理员重置密码:设为默认 123456,并踢掉该用户所有会话 */
+    public void resetPassword(Long id) {
+        SysUser user = userMapper.selectById(id);
+        if (user == null) {
+            throw new ServiceException("用户不存在");
+        }
+        user.setPassword(passwordEncoder.encode("123456"));
+        userMapper.updateById(user);
+        StpUtil.logout(id);
     }
 
     /** 查用户已分配的角色 id */
