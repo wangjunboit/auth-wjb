@@ -49,6 +49,8 @@ CREATE TABLE IF NOT EXISTS sys_menu (
     path        VARCHAR(200) NULL COMMENT '前端路由',
     component   VARCHAR(255) NULL COMMENT '前端组件路径',
     perm        VARCHAR(100) NULL COMMENT '权限码',
+    api_url     VARCHAR(200) NULL COMMENT '后端接口URL模式(Ant风格),仅承载鉴权映射的菜单使用',
+    api_method  VARCHAR(10)  NULL COMMENT 'HTTP方法GET/POST/PUT/DELETE,空或*为任意',
     icon        VARCHAR(100) NULL COMMENT '图标',
     sort        INT          NOT NULL DEFAULT 0 COMMENT '排序号',
     visible     TINYINT      NOT NULL DEFAULT 1 COMMENT '是否显示:0隐藏 1显示',
