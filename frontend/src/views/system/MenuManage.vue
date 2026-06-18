@@ -43,6 +43,17 @@
         <el-form-item label="路由"><el-input v-model="form.path" placeholder="目录如 /system,菜单如 user" /></el-form-item>
         <el-form-item label="组件"><el-input v-model="form.component" placeholder="如 system/user/index" /></el-form-item>
         <el-form-item label="权限码"><el-input v-model="form.perm" placeholder="如 system:user:list" /></el-form-item>
+        <el-form-item label="接口URL" v-if="form.menuType === 'F'">
+          <el-input v-model="form.apiUrl" placeholder="如 /system/user/list,支持 * 与 **" />
+        </el-form-item>
+        <el-form-item label="接口方法" v-if="form.menuType === 'F'">
+          <el-select v-model="form.apiMethod" clearable placeholder="任意" style="width: 100%">
+            <el-option label="GET" value="GET" />
+            <el-option label="POST" value="POST" />
+            <el-option label="PUT" value="PUT" />
+            <el-option label="DELETE" value="DELETE" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="排序"><el-input-number v-model="form.sort" :min="0" /></el-form-item>
       </el-form>
       <template #footer>
@@ -63,7 +74,7 @@ const saving = ref(false)
 const tree = ref([])
 const formRef = ref()
 const dialog = reactive({ visible: false, title: '' })
-const form = reactive({ id: null, parentId: null, menuName: '', menuType: 'C', path: '', component: '', perm: '', sort: 0 })
+const form = reactive({ id: null, parentId: null, menuName: '', menuType: 'C', path: '', component: '', perm: '', sort: 0, apiUrl: '', apiMethod: '' })
 const rules = {
   menuName: [{ required: true, message: '请输入菜单名', trigger: 'blur' }],
   menuType: [{ required: true, message: '请选择类型', trigger: 'change' }]
@@ -85,6 +96,7 @@ const load = async () => {
 const resetForm = () => {
   form.id = null; form.parentId = null; form.menuName = ''; form.menuType = 'C'
   form.path = ''; form.component = ''; form.perm = ''; form.sort = 0
+  form.apiUrl = ''; form.apiMethod = ''
 }
 const openAdd = (parent) => {
   resetForm()
@@ -96,6 +108,7 @@ const openEdit = (row) => {
   form.id = row.id; form.parentId = row.parentId === 0 ? null : row.parentId
   form.menuName = row.menuName; form.menuType = row.menuType; form.path = row.path
   form.component = row.component; form.perm = row.perm; form.sort = row.sort || 0
+  form.apiUrl = row.apiUrl || ''; form.apiMethod = row.apiMethod || ''
   dialog.title = '编辑菜单'; dialog.visible = true
 }
 const onSave = async () => {
