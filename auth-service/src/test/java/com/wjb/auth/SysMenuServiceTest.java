@@ -17,7 +17,8 @@ class SysMenuServiceTest {
 
     private final SysMenuMapper menuMapper = Mockito.mock(SysMenuMapper.class);
     private final SysRoleMenuMapper roleMenuMapper = Mockito.mock(SysRoleMenuMapper.class);
-    private final SysMenuService service = new SysMenuService(menuMapper, roleMenuMapper);
+    private final com.wjb.auth.rbac.ApiPermPublisher apiPermPublisher = Mockito.mock(com.wjb.auth.rbac.ApiPermPublisher.class);
+    private final SysMenuService service = new SysMenuService(menuMapper, roleMenuMapper, apiPermPublisher);
 
     @Test
     void remove_hasChildren_shouldFail() {

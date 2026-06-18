@@ -21,6 +21,7 @@ public class SysMenuService {
 
     private final SysMenuMapper menuMapper;
     private final SysRoleMenuMapper roleMenuMapper;
+    private final com.wjb.auth.rbac.ApiPermPublisher apiPermPublisher;
 
     /** 全部菜单构造成树(按 sort 升序) */
     public List<MenuTreeNode> tree() {
@@ -57,6 +58,7 @@ public class SysMenuService {
         SysMenu menu = new SysMenu();
         applyTo(menu, req);
         menuMapper.insert(menu);
+        apiPermPublisher.refresh();
     }
 
     public void update(MenuSaveRequest req) {
@@ -69,6 +71,7 @@ public class SysMenuService {
         }
         applyTo(menu, req);
         menuMapper.updateById(menu);
+        apiPermPublisher.refresh();
     }
 
     public void remove(Long id) {
@@ -82,6 +85,7 @@ public class SysMenuService {
             throw new ServiceException("该菜单已被角色引用,不可删除");
         }
         menuMapper.deleteById(id);
+        apiPermPublisher.refresh();
     }
 
     private void applyTo(SysMenu menu, MenuSaveRequest req) {
